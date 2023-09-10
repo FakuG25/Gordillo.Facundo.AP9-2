@@ -7,6 +7,9 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.ClientService;
+import com.mindhub.homebanking.services.implement.ClientServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,22 +39,29 @@ public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
 
-    @RequestMapping("/clients")
-    public List<ClientDTO> getClients() {
-        return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
-    }
+    @Autowired
+    private ClientService clientService;
 
-    @RequestMapping("/clients/{id}")
-    public ClientDTO getClientById(@PathVariable Long id) {
-        return new ClientDTO(clientRepository.findById(id).orElse(null));
-    }
-
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AccountRepository accountRepository;
+    @RequestMapping("/clients")
+    public List<ClientDTO> getClients() {
+        return clientService.getClients();
+    }
+
+    @RequestMapping("/clients/{id}")
+    public ClientDTO getClientById(@PathVariable Long id) {
+        return clientService.getClientById(id);
+    }
+
+
+
 
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Object> register(
@@ -64,16 +74,17 @@ public class ClientController {
             if (clientRepository.findByEmail(email) != null) {
                 return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
             }
-            Client client = clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
-           Account account = accountRepository.save(new Account(createNumberAccount(),LocalDate.now(), 0));
+            Client client = clientRepository.save(new Client(firstName, lastName, email,
+                                                     passwordEncoder.encode(password)));
+            Account account = accountRepository.save(new Account(createNumberAccount(),LocalDate.now(), 0));
             client.addAccount(account);
-            accountRepository.save(account);
+            accountService.save(account);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
 
     @RequestMapping(path = "/clients/current", method = RequestMethod.GET)
     public ClientDTO getAll(Authentication authentication) {
-    return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
+    return clientService.getAll(authentication.getName());
     }
 
 

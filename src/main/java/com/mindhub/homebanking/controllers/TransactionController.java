@@ -8,6 +8,8 @@ import com.mindhub.homebanking.models.TransactionType;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,24 +27,29 @@ import java.util.stream.Collectors;
 public class TransactionController {
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
+    @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
+    private AccountService accountService;
 
 
     @RequestMapping("/transactions")
     public List<TransactionDTO> getTransactions(){
-        return transactionRepository.findAll().stream().map(TransactionDTO::new).collect(Collectors.toList());
+        return transactionService.getTransactions();
     }
 
     @GetMapping("/transactions/id")
         public TransactionDTO getTransaction(@PathVariable Long id){
-        return this.transactionRepository.findById(id).map(TransactionDTO::new).orElse(null);
+        return transactionService.getTransaction(id);
     }
     @Transactional
     @PostMapping("/transactions")
@@ -98,17 +105,13 @@ public class TransactionController {
         fromAccount.setBalance(fromAccount.getBalance() - amount);
         toAccount.setBalance(toAccount.getBalance() + amount);
 
-        transactionRepository.save(debitTransaction);
-        transactionRepository.save(creditTransaction);
+        transactionService.save(debitTransaction);
+        transactionService.save(creditTransaction);
 
-        accountRepository.save(fromAccount);
-        accountRepository.save(toAccount);
+        accountService.save(fromAccount);
+        accountService.save(toAccount);
 
         return new ResponseEntity<>("Transferencia realizada con exito", HttpStatus.CREATED);
     }
     }
 
-//podria asignarle a accorigin y destination la cuenta del cliente autenticado y ahi comparar las id
-//podria buscar el client id de las cuentas para saber si pertenecen a la misma cuenta o no
-//crear 2 transacciones una que sume y otra que reste plata de la supuesta cuenta
-//despues agregar las transacciones a dichas cuentas

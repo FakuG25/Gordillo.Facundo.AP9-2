@@ -4,22 +4,16 @@ import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.dtos.TransactionDTO;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Transaction;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 public interface TransactionService {
-    void saveTransaction(Transaction transaction);
+    void save(Transaction transaction);
 
-    List<TransactionDTO> getTransactionDTO();
+    List<TransactionDTO> getTransactions();
 
-    TransactionDTO getTransactionDTO(Long id);
+    TransactionDTO getTransaction(@PathVariable Long id);
 
-    Transaction findById(Long id);
-
-    void  saveAccount(Account account);
-
-    List<AccountDTO> getAccountDTO();
-
-    AccountDTO findByNumber(String number);
 
 }

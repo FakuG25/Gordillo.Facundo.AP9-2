@@ -33,12 +33,15 @@ public class HomebankingApplication {
 
 	}
 
-
+/*
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
+
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository){
 		return (args) -> {
+
 			Client client1 = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("123"));
 			Client client2 = new Client("Jorge", "Alvarez", "AlvarezJorge@gmail.com", passwordEncoder.encode("1234"));
 			Client client3 = new Client("admin", "admin", "admin@admin.com", passwordEncoder.encode("admin"));
@@ -125,5 +128,7 @@ public class HomebankingApplication {
 
 
 		};
+
+ */
 	}
-}
+
