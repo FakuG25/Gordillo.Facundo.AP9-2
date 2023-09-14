@@ -23,41 +23,37 @@ import java.util.stream.Collectors;
 @RestController
 public class LoanApplicationController {
 
-    @Autowired
-    private ClientRepository clientRepository;
+   @Autowired
+   private LoanApplicationService loanApplicationService;
 
     @Autowired
-    private LoanRepository loanRepository;
-
-
-    @Autowired
-    private AccountRepository accountRepository;
+    ClientLoanService clientLoanService;
 
     @Autowired
-    private TransactionRepository transactionRepository;
-
-
-    @Autowired
-    private ClientLoanRepository clientLoanRepository;
-
-    @Autowired
-    private LoanApplicationService loanApplicationService;
+    private AccountService accountService;
 
     @Autowired
     private TransactionService transactionService;
 
-    @Autowired
-    private ClientLoanService clientLoanService;
 
     @Autowired
-    private AccountService accountService;
+   ClientRepository clientRepository;
+
+   @Autowired
+   AccountRepository accountRepository;
+
+   @Autowired
+   LoanRepository loanRepository;
+
+
+
 
     @GetMapping("/loans")
     public ResponseEntity<List<LoanDTO>> getLoans() {
         return loanApplicationService.getLoans();
     }
 
-    @RequestMapping("/loans/{id}")
+    @GetMapping("/loans/{id}")
     public LoanDTO getLoansId(@PathVariable Long id) {
         return loanApplicationService.getLoansId(id);
     }

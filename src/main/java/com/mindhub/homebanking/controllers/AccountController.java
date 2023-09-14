@@ -17,23 +17,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.mindhub.homebanking.utils.CardUtils.uniqueRandomNumberAccount;
+
+
 @RequestMapping("/api")
 @RestController
 public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
-    public int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
-
-    public String uniqueRandomNumber(){
-        String number;
-        do {
-            number = ("VIN-" + getRandomNumber(1, 99999999));
-            return number;
-        } while (accountRepository.existsByNumber(number));
-
-    }
 
         @Autowired
         private ClientRepository clientRepository;
@@ -44,7 +35,7 @@ public class AccountController {
         @Autowired
         private ClientService clientService;
 
-        @RequestMapping("/accounts")
+        @GetMapping("/accounts")
         public List<AccountDTO> getAccounts() {
             return accountService.getAccounts();
         }
@@ -63,7 +54,7 @@ public class AccountController {
             Client client = this.clientRepository.findByEmail((authentication.getName()));
 
             if (client.getAccounts().size() < 3) {
-               Account account =  accountRepository.save(new Account(uniqueRandomNumber(), LocalDate.now(), 0));
+               Account account =  accountRepository.save(new Account(uniqueRandomNumberAccount(), LocalDate.now(), 0));
                 client.addAccount(account);
                 accountService.save(account);
                 return new ResponseEntity<>("La cuenta fue creada con exito", HttpStatus.CREATED);

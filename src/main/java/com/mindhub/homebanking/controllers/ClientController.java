@@ -25,17 +25,12 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mindhub.homebanking.utils.CardUtils.createNumberAccount;
+
+
 @RequestMapping("/api")
 @RestController
 public class ClientController {
-    public int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
-
-    public String createNumberAccount(){
-        String number = "VIN-" + getRandomNumber(1, 99999999);
-        return number;
-    }
     @Autowired
     private ClientRepository clientRepository;
 
@@ -50,12 +45,13 @@ public class ClientController {
 
     @Autowired
     private AccountRepository accountRepository;
-    @RequestMapping("/clients")
+
+    @GetMapping("/clients")
     public List<ClientDTO> getClients() {
         return clientService.getClients();
     }
 
-    @RequestMapping("/clients/{id}")
+    @GetMapping("/clients/{id}")
     public ClientDTO getClientById(@PathVariable Long id) {
         return clientService.getClientById(id);
     }
@@ -63,7 +59,7 @@ public class ClientController {
 
 
 
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(
             @RequestParam String firstName, @RequestParam String lastName,
             @RequestParam String email, @RequestParam String password) {
@@ -82,7 +78,9 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
 
-    @RequestMapping(path = "/clients/current", method = RequestMethod.GET)
+
+
+    @GetMapping("/clients/current")
     public ClientDTO getAll(Authentication authentication) {
     return clientService.getAll(authentication.getName());
     }

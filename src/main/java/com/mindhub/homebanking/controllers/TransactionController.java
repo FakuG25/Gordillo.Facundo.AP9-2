@@ -42,7 +42,7 @@ public class TransactionController {
     private AccountService accountService;
 
 
-    @RequestMapping("/transactions")
+    @GetMapping("/transactions")
     public List<TransactionDTO> getTransactions(){
         return transactionService.getTransactions();
     }

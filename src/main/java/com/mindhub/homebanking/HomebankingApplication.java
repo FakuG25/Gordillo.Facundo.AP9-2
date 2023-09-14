@@ -20,19 +20,6 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 
-	@Autowired AccountRepository accountRepository;
-	public int getRandomNumber(int min, int max) {
-		return (int) ((Math.random() * (max - min)) + min);
-	}
-	public String uniqueRandomNumber(){
-		String number;
-		do {
-			number = ("VIN-" + getRandomNumber(1, 99999999));
-			return number;
-		} while (accountRepository.existsByNumber(number));
-
-	}
-
 /*
 	@Autowired
 	PasswordEncoder passwordEncoder;
